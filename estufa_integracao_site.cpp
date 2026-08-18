@@ -22,11 +22,11 @@ const char* TOPICO_COMANDO    = "estufa/senai/comando"; // Web Dashboard envia o
 // MAPEAMENTO DE PINOS (ESP32-S3-N16R8)
 // ==========================================
 #define DHTPIN        15      // Pino do sensor DHT
-#define DHTTYPE       DHT22   // Troque para DHT11 se necessário
+#define DHTTYPE       DHT11   // Troque para DHT22 se necessário
 #define LDR_PIN       4       // Sensor de Luminosidade (ADC1_3)
 #define POT_PIN       5       // Reservatório/Solo (ADC1_4)
-#define LED_IRRIGACAO 2       // Atuador da Bomba
-#define BUZZER_PIN    1       // Atuador de Alerta Exaustão
+#define LED_IRRIGACAO 6       // Atuador da Bomba
+#define BUZZER_PIN    7       // Atuador de Alerta Exaustão
 
 #define I2C_SDA       8       // SDA Hardware conforme o pinout do ESP32-S3
 #define I2C_SCL       9       // SCL Hardware conforme o pinout do ESP32-S3
