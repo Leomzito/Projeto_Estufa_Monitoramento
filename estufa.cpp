@@ -10,8 +10,8 @@
 #define DHTTYPE       DHT11   // DHT 22 Ou DHT11
 #define LDR_PIN       4       // Canal ADC1_3 (Seguro com Wi-Fi)
 #define POT_PIN       5       // Canal ADC1_4 (Seguro com Wi-Fi)
-#define LED_IRRIGACAO 2       // Saída para o LED
-#define BUZZER_PIN    1       // Saída para o Buzzer
+#define LED_IRRIGACAO 6       // Saída para o LED
+#define BUZZER_PIN    7       // Saída para o Buzzer
 
 // Pinos I2C dedicados conforme o esquemático da imagem
 #define I2C_SDA       8       // Pino SDA indicado na imagem
