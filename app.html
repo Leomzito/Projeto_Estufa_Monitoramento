@@ -19,7 +19,7 @@
 
 <body>
   <div class="shell">
-    <header><div><p class="eyebrow">Estufa IoT / painel ao vivo</p><h1>Monitoramento<br>da estufa</h1><p class="subtitle">Sensores ambientais em um só lugar.</p></div><div class="header-actions"><div class="connection" id="mqtt-status">Conectando ao broker</div></div></header>
+    <header><div><p class="eyebrow">Estufa IoT / painel ao vivo</p><h1>Monitoramento<br>da estufa</h1><p class="subtitle">Sensores ambientais em um só lugar.</p></div><div class="header-actions"><div class="install-actions" id="install-actions" aria-label="Instalar aplicativo"><button class="install-button" id="install-computer" type="button">Instalar no computador</button><button class="install-button" id="install-mobile" type="button">Instalar no celular</button></div><div class="connection" id="mqtt-status">Conectando ao broker</div></div></header>
     <section class="hero"><div class="hero-panel"><p class="eyebrow hero-eyebrow">Leitura atual</p><h2 id="summary-title">Aguardando dados dos sensores</h2><p id="last-update">O painel será atualizado assim que a estufa publicar uma nova leitura.</p></div><div class="hero-state"><small>Estado da irrigação</small><strong id="irrigacao-texto">DESLIGADO</strong><span id="irrigacao-badge">Bomba inativa</span></div></section>
     <section class="metrics" aria-label="Leituras atuais">
       <article class="card"><div class="metric-top"><span class="metric-label">Temperatura</span><span class="metric-icon">°C</span></div><div class="metric-value temp" id="temp-val">-- °C</div><div class="metric-detail">Alerta acima de 30 °C</div></article>

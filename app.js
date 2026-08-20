@@ -1,6 +1,7 @@
 let chartTempUmid = null;
 let chartLuminosidade = null;
 const alertasAtivos = new Set();
+let instalacaoPendente = null;
 
 const mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
   clientId: 'web_estufa_display_' + Math.random().toString(16).substr(2, 8)
@@ -80,8 +81,39 @@ function adicionarPontoGrafico(chart, label, dados) {
 window.addEventListener('load', () => {
   inicializarGraficos();
   if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+  configurarInstalacao();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(registration => registration.update());
   }
 });
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  instalacaoPendente = event;
+});
+
+window.addEventListener('appinstalled', () => {
+  instalacaoPendente = null;
+  document.getElementById('install-actions').hidden = true;
+});
+
+function configurarInstalacao() {
+  const controles = document.getElementById('install-actions');
+  const aplicativoInstalado = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  controles.hidden = aplicativoInstalado;
+  if (aplicativoInstalado) return;
+  document.getElementById('install-computer').addEventListener('click', instalarAplicativo);
+  document.getElementById('install-mobile').addEventListener('click', instalarAplicativo);
+}
+
+async function instalarAplicativo() {
+  if (!instalacaoPendente) {
+    alert('A instalação é controlada pelo navegador. Abra esta página no Chrome ou Edge usando HTTPS e aguarde a opção "Instalar aplicativo" no navegador.');
+    return;
+  }
+  const eventoInstalacao = instalacaoPendente;
+  instalacaoPendente = null;
+  eventoInstalacao.prompt();
+  await eventoInstalacao.userChoice;
+}
 
