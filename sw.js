@@ -1,5 +1,5 @@
-const CACHE_NAME = 'estufa-iot-v4';
-const APP_SHELL = ['./', './app.html', './app.css', './app.js', './manifest.json', './icon.svg'];
+const CACHE_NAME = 'estufa-iot-v5';
+const APP_SHELL = ['./', './app.html', './app.css', './app.js', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
