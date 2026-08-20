@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10251e">
+  <meta name="description" content="Monitoramento em tempo real da estufa IoT">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>Estufa | Monitoramento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+  <div class="shell">
+    <header><div><p class="eyebrow">Estufa IoT / painel ao vivo</p><h1>Monitoramento<br>da estufa</h1><p class="subtitle">Sensores ambientais em um só lugar.</p></div><div class="header-actions"><div class="connection" id="mqtt-status">Conectando ao broker</div></div></header>
+    <section class="hero"><div class="hero-panel"><p class="eyebrow hero-eyebrow">Leitura atual</p><h2 id="summary-title">Aguardando dados dos sensores</h2><p id="last-update">O painel será atualizado assim que a estufa publicar uma nova leitura.</p></div><div class="hero-state"><small>Estado da irrigação</small><strong id="irrigacao-texto">DESLIGADO</strong><span id="irrigacao-badge">Bomba inativa</span></div></section>
+    <section class="metrics" aria-label="Leituras atuais">
+      <article class="card"><div class="metric-top"><span class="metric-label">Temperatura</span><span class="metric-icon">°C</span></div><div class="metric-value temp" id="temp-val">-- °C</div><div class="metric-detail">Alerta acima de 30 °C</div></article>
+      <article class="card"><div class="metric-top"><span class="metric-label">Umidade do ar</span><span class="metric-icon">%</span></div><div class="metric-value humidity" id="umid-val">-- %</div><div class="metric-detail">Alerta de mofo acima de 85%</div></article>
+      <article class="card"><div class="metric-top"><span class="metric-label">Umidade do solo</span><span class="metric-icon">▰</span></div><div class="metric-value" id="nivel-agua-val">--%</div><div class="progress"><i id="water-bar"></i></div></article>
+      <article class="card"><div class="metric-top"><span class="metric-label">Luminosidade</span><span class="metric-icon">☼</span></div><div class="metric-value" id="luz-val">--%</div><div class="metric-detail">Sensor LDR</div></article>
+    </section>
+    <section class="card alerts"><div class="section-heading"><h2>Central de alertas</h2><span class="section-label" id="alert-count">0 ativos</span></div><div class="alert-list" id="alert-list"><div class="alert ok"><span class="alert-symbol">✓</span><div><strong>Ambiente dentro dos parâmetros</strong>Sem alertas no momento.</div></div></div></section>
+    <section class="charts"><article class="card"><div class="section-heading"><h2>Temperatura e umidade</h2><span class="section-label">últimas leituras</span></div><div class="chart-wrap"><canvas id="chartTempUmid"></canvas></div></article><article class="card"><div class="section-heading"><h2>Luminosidade</h2><span class="section-label">LDR</span></div><div class="chart-wrap"><canvas id="chartLuminosidade"></canvas></div></article></section>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
