@@ -35,7 +35,7 @@ const char* TOPICO_COMANDO    = "estufa/senai/comando"; // Web Dashboard envia o
 // PARÂMETROS E OBJETOS DO SISTEMA
 // ==========================================
 #define TEMP_LIMITE_ALTA 30.0
-#define SOLO_CRITICO     300
+#define SOLO_CRITICO     410
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
