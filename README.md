@@ -2,8 +2,7 @@
 
 INTEGRANTES: Pedro Peruzzo, João Guilherme, Felipe Galdino, Sebastian Figueroa, Luiz Muraski.
 
- A estufa tem sensores que marcam a umidade, o nível de água, luminosidade, entre outros. O objetivo desse projeto é integrar esses sensores a um site, que maostra todos esses dados, além de nos deixar controlar certas coisas dentro da estufa, como ligar e desligar o irrigador. O projeto facilita o manejo da estufa.
-
+ A estufa tem sensores que marcam a umidade, o nível de água, luminosidade, e temperatura. Além de possuir alertas visuais para falta de água, e sonoros para temperatura elevada. O objetivo desse projeto é integrar esses sensores a um site e aplicativos, que mostrarão todos esses dados,
 COMPONENTES UTILIZADOS: 
 1x Placa ESP32
 1x Protoboard
