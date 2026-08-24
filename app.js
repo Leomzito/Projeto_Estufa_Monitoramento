@@ -2,6 +2,8 @@ let chartTempUmid = null;
 let chartLuminosidade = null;
 const alertasAtivos = new Set();
 let instalacaoPendente = null;
+let estadoBombaAnterior = null;
+let registroServiceWorker = null;
 
 const mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
   clientId: 'web_estufa_display_' + Math.random().toString(16).substr(2, 8)
@@ -47,7 +49,9 @@ function processarDadosRecebidos(data) {
   document.getElementById('water-bar').style.width = `${agua}%`;
   document.getElementById('summary-title').textContent = temp > 30 || umid > 85 ? 'Atenção ao microclima' : 'Ambiente dentro dos parâmetros';
   document.getElementById('last-update').textContent = `Última leitura às ${new Date().toLocaleTimeString('pt-BR')}`;
-  atualizarStatusBombaUI(Boolean(data.bomba));
+  const estadoBomba = Boolean(data.bomba);
+  atualizarStatusBombaUI(estadoBomba);
+  notificarMudancaIrrigacao(estadoBomba);
   atualizarAlertas(temp, umid);
   const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   adicionarPontoGrafico(chartTempUmid, hora, [temp, umid]); adicionarPontoGrafico(chartLuminosidade, hora, [luz]);
@@ -70,7 +74,41 @@ function atualizarAlertas(temp, umid) {
   lista.innerHTML = alertas.length ? alertas.map(alerta => `<div class="alert ${alerta.classe}"><span class="alert-symbol">${alerta.simbolo}</span><div><strong>${alerta.titulo}</strong>${alerta.texto}</div></div>`).join('') : '<div class="alert ok"><span class="alert-symbol">✓</span><div><strong>Ambiente dentro dos parâmetros</strong>Sem alertas no momento.</div></div>';
 }
 
-function notificar(titulo, texto) { if ('Notification' in window && Notification.permission === 'granted') new Notification(`Estufa: ${titulo}`, { body: texto }); }
+async function notificar(titulo, texto) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const opcoes = { body: texto, tag: `estufa-${titulo}` };
+  if (registroServiceWorker) {
+    await registroServiceWorker.showNotification(`Estufa: ${titulo}`, opcoes);
+  } else {
+    new Notification(`Estufa: ${titulo}`, opcoes);
+  }
+}
+
+function notificarMudancaIrrigacao(estadoBomba) {
+  if (estadoBombaAnterior === null) {
+    estadoBombaAnterior = estadoBomba;
+    return;
+  }
+  if (estadoBomba === estadoBombaAnterior) return;
+  estadoBombaAnterior = estadoBomba;
+  notificar(
+    estadoBomba ? 'Irrigacao iniciada' : 'Irrigacao interrompida',
+    estadoBomba ? 'O solo esta seco. A bomba foi ligada automaticamente.' : 'A umidade do solo foi recuperada. A bomba foi desligada automaticamente.'
+  );
+}
+
+async function ativarNotificacoes() {
+  if (!('Notification' in window)) return;
+  const permissao = await Notification.requestPermission();
+  atualizarControleNotificacoes(permissao);
+}
+
+function atualizarControleNotificacoes(permissao) {
+  const controle = document.getElementById('enable-notifications');
+  if (!controle) return;
+  controle.hidden = permissao === 'granted';
+  if (permissao === 'denied') controle.textContent = 'Notificações bloqueadas';
+}
 
 function adicionarPontoGrafico(chart, label, dados) {
   if (!chart) return;
@@ -80,10 +118,16 @@ function adicionarPontoGrafico(chart, label, dados) {
 
 window.addEventListener('load', () => {
   inicializarGraficos();
-  if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+  if ('Notification' in window) {
+    atualizarControleNotificacoes(Notification.permission);
+    document.getElementById('enable-notifications').addEventListener('click', ativarNotificacoes);
+  }
   configurarInstalacao();
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then(registration => registration.update());
+    navigator.serviceWorker.register('./sw.js').then(registration => {
+      registroServiceWorker = registration;
+      return registration.update();
+    });
   }
 });
 

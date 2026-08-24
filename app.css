@@ -10,6 +10,7 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
 .install-actions[hidden] { display: none; }
 .install-button { border: 0; padding: 11px 15px; color: #fffdf8; background: var(--green); font: 700 .8rem 'DM Sans', sans-serif; cursor: pointer; }
 .install-button + .install-button { background: var(--cyan); }
+.notification-button { background: var(--amber); }
 .install-button:hover { background: #225c40; }
 .eyebrow { margin: 0 0 7px; color: var(--green); font-size: .74rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 

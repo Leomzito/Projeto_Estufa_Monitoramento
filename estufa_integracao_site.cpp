@@ -36,6 +36,7 @@ const char* TOPICO_COMANDO    = "estufa/senai/comando"; // Web Dashboard envia o
 // ==========================================
 #define TEMP_LIMITE_ALTA 30.0
 #define SOLO_CRITICO     410
+#define SOLO_REIDRATADO  520
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
@@ -43,7 +44,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 DHT dht(DHTPIN, DHTTYPE);
 
 // Variáveis Globais de Estado
-bool bombaManualWeb = false;
+bool estadoBomba = false;
 unsigned long tempoUltimoEnvio = 0;
 
 // Protótipo de Funções
@@ -108,9 +109,9 @@ void loop() {
     int pctSolo = map(leituraSolo, 0, 4095, 0, 100);
     int pctLuz  = map(leituraLDR, 0, 4095, 0, 100);
 
-    // 2. Lógica de Automação Local com override Web
-    // A bomba liga se o solo estiver crítico OU se for acionada manualmente no Dashboard
-    bool estadoBomba = (leituraSolo < SOLO_CRITICO) || bombaManualWeb;
+    // 2. Irrigação automática com histerese para evitar liga/desliga repetido
+    if (!estadoBomba && leituraSolo < SOLO_CRITICO) estadoBomba = true;
+    if (estadoBomba && leituraSolo > SOLO_REIDRATADO) estadoBomba = false;
     digitalWrite(LED_IRRIGACAO, estadoBomba ? HIGH : LOW);
 
     // Alarme/Exaustor por temperatura
@@ -180,7 +181,7 @@ void conectarMQTT() {
   }
 }
 
-// Executada automaticamente quando o Dashboard envia um JSON para "estufa/senai/comando"
+// Mantém o tópico de comando compatível, mas a irrigação permanece automática.
 void callbackMQTT(char* topic, byte* payload, unsigned int length) {
   Serial.print("[RX MQTT] ");
   
@@ -193,10 +194,5 @@ void callbackMQTT(char* topic, byte* payload, unsigned int length) {
     return;
   }
 
-  // Atualiza o estado da bomba a partir do comando da interface web
-  if (doc.containsKey("bomba")) {
-    bombaManualWeb = doc["bomba"];
-    digitalWrite(LED_IRRIGACAO, bombaManualWeb ? HIGH : LOW);
-    Serial.printf("Comando recebido - Bomba Alterada via Web para: %s\n", bombaManualWeb ? "LIGADA" : "DESLIGADA");
-  }
+  Serial.println("Comando recebido, mas a irrigacao esta em modo automatico.");
 }

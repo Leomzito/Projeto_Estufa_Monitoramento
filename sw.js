@@ -1,4 +1,4 @@
-const CACHE_NAME = 'estufa-iot-v6';
+const CACHE_NAME = 'estufa-iot-v7';
 const APP_SHELL = ['./', './app.html', './app.css', './app.js', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
